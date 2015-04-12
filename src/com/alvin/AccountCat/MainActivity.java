@@ -109,9 +109,12 @@ public class MainActivity extends Activity {
             case R.id.textView_date:
                 DatePickerDialog dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear,
-                                          int dayOfMonth) {
-                        dateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                    public void onDateSet(DatePicker datePicker, int y, int m,
+                                          int d) {
+                        dateString = y + "-" + (m + 1) + "-" + d;
+                        year = y;
+                        monthOfYear = m;
+                        dayOfMonth = d;
                         textView_date.setText(dateString);
                     }
                 }, year, monthOfYear, dayOfMonth);

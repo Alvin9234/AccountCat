@@ -31,9 +31,11 @@ public class DetailArcChartView extends View{
     /////////////////////////////////////////////
     //动态设置数据显示
     private int tabIndex;
+
     /**
      * 此方法用于更新数据，在主线程中调用
      * @param data
+     * @param tabIndex
      */
     public void setData(float[] data,int tabIndex){
         this.data = data;
@@ -44,7 +46,9 @@ public class DetailArcChartView extends View{
         }
     }
     ////////////////////////////////////////////
-
+    private float width;
+    private float height;
+    private float sum;
     /**
      * 通用的初始化方法
      * @param context
@@ -55,45 +59,64 @@ public class DetailArcChartView extends View{
         arcPaint.setColor(Color.BLACK);
         arcPaint.setStyle(Paint.Style.FILL);//填充
         arcPaint.setAntiAlias(true);
+
+        width = getWidth();
+        height = getHeight();
         // 参数  left  top   right  bottom
-        arcRect = new RectF(150,100,360,310);
+        arcRect = new RectF(0,0,100,100);
         data = new float[]{10000,5000};
     }
-
+    private void getSum(float[] data){
+        for (int i = 0; i < data.length; i++) {
+            sum+=data[i];
+        }
+    }
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         //清除内容
         canvas.drawColor(Color.WHITE);
-
         switch (tabIndex){
             case 0:
+                getSum(data);
                 //画绿色的半圆
                 arcPaint.setColor(Color.GREEN);
-                float a = (float)((data[0]/(data[0]+data[1]))*360);
+                float a = (data[0]/sum)*360;
                 canvas.drawArc(arcRect,0,a,true,arcPaint);
                 //画蓝色的半圆
                 arcPaint.setColor(Color.BLUE);
-                float b = (float)((data[1]/(data[0]+data[1]))*360);
+                float b = (data[1]/sum)*360;
                 canvas.drawArc(arcRect,a,360-a,true,arcPaint);
+                sum=0;
                 break;
             case 1:
-                //画绿色的半圆
-                arcPaint.setColor(Color.GREEN);
-                float q = (float)((data[0]/(data[0]+data[1]+data[2]+data[3]))*360);
-                canvas.drawArc(arcRect,0,q,true,arcPaint);
-                //画蓝色的半圆
-                arcPaint.setColor(Color.BLUE);
-                float w = (float)((data[1]/(data[0]+data[1]+data[2]+data[3]))*360);
-                canvas.drawArc(arcRect,q,w,true,arcPaint);
-                //画蓝色的半圆
-                arcPaint.setColor(Color.RED);
-                float e = (float)((data[2]/(data[0]+data[1]+data[2]+data[3]))*360);
-                canvas.drawArc(arcRect,q+w,e,true,arcPaint);
-                //画蓝色的半圆
-                arcPaint.setColor(Color.GRAY);
-                float r = (float)((data[3]/(data[0]+data[1]+data[2]+data[3]))*360);
-                canvas.drawArc(arcRect,q+w+e,r,true,arcPaint);
+                getSum(data);
+                //画 橙色 的半圆   #FFA500
+                arcPaint.setColor(Color.rgb(255,165,0));
+                float entertainment = (data[0]/sum)*360;
+                canvas.drawArc(arcRect,0,entertainment,true,arcPaint);
+                //画 热粉红色 的半圆   #FF69B4
+                arcPaint.setColor(Color.rgb(255,105,180));
+                float repast = (data[1]/sum)*360;
+                canvas.drawArc(arcRect,entertainment,repast,true,arcPaint);
+                //画 红色 的半圆  #FF0000
+                arcPaint.setColor(Color.rgb(255,0,0));
+                float rent = (data[2]/sum)*360;
+                canvas.drawArc(arcRect,entertainment+repast,rent,true,arcPaint);
+                //画 秘鲁色 的半圆  #CD853F
+                arcPaint.setColor(Color.rgb(205,133,63));
+                float traffic = (data[3]/sum)*360;
+                canvas.drawArc(arcRect,entertainment+repast+rent,traffic,true,arcPaint);
+                //画 中粉紫色 的半圆  #BA55D3
+                arcPaint.setColor(Color.rgb(186,85,211));
+                float shopping = (data[4]/sum)*360;
+                canvas.drawArc(arcRect,entertainment+repast+rent+traffic,shopping,true,arcPaint);
+                //画 苍宝石绿 的半圆   #AFEEEE
+                arcPaint.setColor(Color.rgb(175,238,238));
+                float others = (data[5]/sum)*360;
+                canvas.drawArc(arcRect,entertainment+repast+rent+traffic+shopping,others,true,arcPaint);
+                sum=0;
+                break;
         }
 
     }

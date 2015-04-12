@@ -2,70 +2,295 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+        >
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             >
+
         <Button
                 android:id="@+id/btn_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="clickBtn"
                 android:text="按年"
                 />
+
         <Button
                 android:id="@+id/btn_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="clickBtn"
                 android:text="按月"
                 />
+
         <Button
                 android:id="@+id/btn_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="clickBtn"
                 android:text="按周"
                 />
+
         <Button
                 android:id="@+id/btn_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="clickBtn"
                 android:text="按日"
                 />
+
         <Button
                 android:id="@+id/btn_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="clickBtn"
                 android:text="查看"
                 />
     </LinearLayout>
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:orientation="horizontal"
             >
+
         <com.alvin.fragment.DetailArcChartView
                 android:id="@+id/charView"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="2"
                 android:layout_height="match_parent"
                 />
+
+        <ScrollView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                >
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/img_calendar"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/calendar"
+                            />
+
+                    <TextView
+                            android:id="@+id/txt_date"
+                            android:layout_marginTop="10dp"
+                            android:clickable="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="xxxx-xx-xx"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/color_salary"
+                            android:layout_width="20dp"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="10dp"
+                            android:background="#0f0"
+                            />
+
+                    <TextView
+                            android:id="@+id/ratio_salary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:textColor="#000"
+                            android:text="工资0%"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/color_windfall"
+                            android:layout_width="20dp"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="5dp"
+                            android:background="#00f"
+                            />
+
+                    <TextView
+                            android:id="@+id/ratio_windfall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000"
+                            android:text="外快0%"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/color_entertainment"
+                            android:layout_width="20dp"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/orange"
+                            />
+
+                    <TextView
+                            android:id="@+id/ratio_entertainment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000"
+                            android:text="娱乐0%"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/color_repast"
+                            android:layout_width="20dp"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/hotpink"
+                            />
+
+                    <TextView
+                            android:id="@+id/ratio_repast"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000"
+                            android:text="餐饮0%"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/color_rent"
+                            android:layout_width="20dp"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/red"
+                            />
+
+                    <TextView
+                            android:id="@+id/ratio_rent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000"
+                            android:text="房租0%"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/color_traffic"
+                            android:layout_width="20dp"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/peru"
+                            />
+
+                    <TextView
+                            android:id="@+id/ratio_traffic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000"
+                            android:text="交通0%"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/color_shopping"
+                            android:layout_width="20dp"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/mediumorchid"
+                            />
+
+                    <TextView
+                            android:id="@+id/ratio_shopping"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000"
+                            android:text="购物0%"
+                            />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    <ImageView
+                            android:id="@+id/color_others"
+                            android:layout_width="20dp"
+                            android:layout_height="10dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/paleturquoise"
+                            />
+
+                    <TextView
+                            android:id="@+id/ratio_others"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000"
+                            android:text="其他0%"
+                            />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
     </LinearLayout>
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
+            android:background="#FFF"
             >
+
         <ListView
                 android:id="@+id/listView_inOrOutLog"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 />
+
         <TextView
                 android:id="@+id/emptyInfo"
                 android:layout_width="wrap_content"
