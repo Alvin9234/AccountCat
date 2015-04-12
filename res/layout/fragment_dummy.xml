@@ -13,37 +13,34 @@
 
         <Button
                 android:id="@+id/btn_year"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="按年"
                 />
 
         <Button
                 android:id="@+id/btn_month"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="按月"
                 />
 
         <Button
                 android:id="@+id/btn_week"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="按周"
                 />
 
         <Button
                 android:id="@+id/btn_day"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="按日"
-                />
-
-        <Button
-                android:id="@+id/btn_check"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="查看"
                 />
     </LinearLayout>
 

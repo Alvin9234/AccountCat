@@ -3,6 +3,7 @@ package com.alvin.fragment;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.alvin.AccountCat.R;
@@ -21,7 +22,6 @@ import java.util.Map;
 public class DummyFragment extends Fragment {
     private MySQLiteOpenHelper helper;
     private ListView listView_inOrOutLog;
-    //private Button btn_year;
 
     private DetailArcChartView charView;
     private TextView emptyInfo;
@@ -34,7 +34,7 @@ public class DummyFragment extends Fragment {
     private int year; // 获取选择日期时的 年
     private int monthOfYear;// 月
     private int dayOfMonth;// 日
-//    private int week;// 星期几
+    private int week;// 在当月是第几周
     private String dateString="";// 拼接日期的字符串
     private String[] arrTabTitles = null;
     private TextView txt_date;//日期
@@ -47,6 +47,11 @@ public class DummyFragment extends Fragment {
     private TextView ratio_traffic;//交通
     private TextView ratio_shopping;//购物
     private TextView ratio_others;//其他
+    // --------按条件查看 按钮控件
+    private Button btn_year;
+    private Button btn_month;
+    private Button btn_week;
+    private Button btn_day;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +59,7 @@ public class DummyFragment extends Fragment {
         year = calendar.get(Calendar.YEAR);
         monthOfYear = calendar.get(Calendar.MONTH);
         dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        //week = calendar.get(Calendar.WEEK_OF_MONTH);
+        week = calendar.get(Calendar.WEEK_OF_MONTH);
         dateString = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
 
         Bundle bundle = getArguments();
@@ -86,8 +91,15 @@ public class DummyFragment extends Fragment {
         float[] totalData = setChartData(totalList);
         drawChart(totalData); // 画图
         setRatioText(totalData);// 设置 比例示意文本
+        setBtnClick();
         return view;
     }
+
+    /**
+     *  求 数据 总和
+     * @param data
+     * @return
+     */
     private float getSum(float[] data){
         float sum=0;
         for (int i = 0; i < data.length; i++) {
@@ -95,6 +107,11 @@ public class DummyFragment extends Fragment {
         }
         return sum;
     }
+
+    /**
+     *  设置 饼图 图例
+     * @param data
+     */
     private void setRatioText(float[] data) {
         float sum = getSum(data);
         switch (tabIndex){
@@ -114,6 +131,11 @@ public class DummyFragment extends Fragment {
         }
     }
 
+    /**
+     *  设置 饼图 数据
+     * @param list
+     * @return
+     */
     private float[] setChartData(List<Map<String, Object>> list) {
         float[] totalData = null;
         switch (tabIndex){
@@ -162,6 +184,9 @@ public class DummyFragment extends Fragment {
         return totalData;
     }
 
+    /**
+     *    选择 日期
+     */
     private void chooseDate() {
         txt_date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,6 +203,10 @@ public class DummyFragment extends Fragment {
                                                               String.valueOf(m+1),
                                                              String.valueOf(y),
                                                             arrTabTitles[tabIndex]});
+                        year = y;
+                        monthOfYear = m;
+                        dayOfMonth = d;
+
                         reloadListView(list);
                         // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
                         float[] data = setChartData(list);
@@ -190,6 +219,10 @@ public class DummyFragment extends Fragment {
         });
     }
 
+    /**
+     *  调用 画饼图 的方法
+     * @param data
+     */
     private void drawChart(float[] data) {
         switch (tabIndex){
             case 0:
@@ -201,17 +234,29 @@ public class DummyFragment extends Fragment {
         }
     }
 
+    /**
+     *   刷新 列表
+     * @param list
+     */
     private void reloadListView( List<Map<String, Object>> list) {
         totalList.clear();
         totalList.addAll(list);
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     *   控件的  findViewById
+     * @param view
+     */
     private void findView(View view) {
         charView = (DetailArcChartView) view.findViewById(R.id.charView);
         listView_inOrOutLog = (ListView) view.findViewById(R.id.listView_inOrOutLog);
-        //btn_year = (Button) view.findViewById(R.id.btn_year);
         emptyInfo = (TextView) view.findViewById(R.id.emptyInfo);
+
+        btn_year = (Button) view.findViewById(R.id.btn_year);
+        btn_month = (Button) view.findViewById(R.id.btn_month);
+        btn_week = (Button) view.findViewById(R.id.btn_week);
+        btn_day = (Button) view.findViewById(R.id.btn_day);
 
         txt_date = (TextView) view.findViewById(R.id.txt_date);
         ratio_salary = (TextView) view.findViewById(R.id.ratio_salary);
@@ -222,5 +267,88 @@ public class DummyFragment extends Fragment {
         ratio_traffic = (TextView) view.findViewById(R.id.ratio_traffic);
         ratio_shopping = (TextView) view.findViewById(R.id.ratio_shopping);
         ratio_others = (TextView) view.findViewById(R.id.ratio_others);
+    }
+
+    /**
+     *   按钮 事件处理
+     */
+    private void setBtnClick(){
+        //  按年查看
+        btn_year.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str = "select * from tb_count where year = ? and article = ?";
+                List<Map<String, Object>> list = helper.selectList(str,
+                        new String[]{String.valueOf(year),
+                                arrTabTitles[tabIndex]});
+                reloadListView(list);
+                // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
+                float[] data = setChartData(list);
+                drawChart(data); // 画图
+                setRatioText(data);// 设置 比例示意文本
+            }
+        });
+        // 按月查看
+        btn_month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str = "select * from tb_count where month = ? and year = ? and article = ?";
+                List<Map<String, Object>> list = helper.selectList(str,
+                        new String[]{ String.valueOf(monthOfYear+1),
+                                String.valueOf(year),
+                                arrTabTitles[tabIndex]});
+                reloadListView(list);
+                // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
+                float[] data = setChartData(list);
+                drawChart(data); // 画图
+                setRatioText(data);// 设置 比例示意文本
+            }
+        });
+        //  按周 查看
+        btn_week.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //------  先根据当前选择的 天，查询数据库，获得相对应的 周 是多少，然后在根据 周 查询数据库，按周查看
+                String str_day = "select * from tb_count where day = ? and month = ? and year = ? and article = ?";
+                List<Map<String, Object>> list_day = helper.selectList(str_day,
+                        new String[]{String.valueOf(dayOfMonth),
+                                String.valueOf(monthOfYear+1),
+                                String.valueOf(year),
+                                arrTabTitles[tabIndex]});
+                Log.i("list_day","list_day---->>>>"+list_day);
+                week = Integer.parseInt(list_day.get(0).get("week").toString());
+
+                String str_week = "select * from tb_count where week = ? and month = ? and year = ? and article = ?";
+                List<Map<String, Object>> list_week = helper.selectList(str_week,
+                        new String[]{String.valueOf(week),
+                                String.valueOf(monthOfYear+1),
+                                String.valueOf(year),
+                                arrTabTitles[tabIndex]});
+                Log.i("list_week","list_week---->>>>"+list_week);
+
+                reloadListView(list_week);
+                // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
+                float[] data = setChartData(list_week);
+                drawChart(data); // 画图
+                setRatioText(data);// 设置 比例示意文本
+            }
+        });
+        //   按天查看
+        btn_day.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str_day = "select * from tb_count where day = ? and month = ? and year = ? and article = ?";
+                List<Map<String, Object>> list_day = helper.selectList(str_day,
+                        new String[]{String.valueOf(dayOfMonth),
+                                String.valueOf(monthOfYear+1),
+                                String.valueOf(year),
+                                arrTabTitles[tabIndex]});
+                reloadListView(list_day);
+                // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
+                float[] data = setChartData(list_day);
+                drawChart(data); // 画图
+                setRatioText(data);// 设置 比例示意文本
+            }
+        });
     }
 }

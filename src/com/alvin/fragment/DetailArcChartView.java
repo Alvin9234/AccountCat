@@ -23,7 +23,7 @@ public class DetailArcChartView extends View{
 
     public DetailArcChartView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context,attrs);
+        init();
     }
     private Paint arcPaint;
     // 弧线的尺寸
@@ -48,24 +48,25 @@ public class DetailArcChartView extends View{
     ////////////////////////////////////////////
     private float width;
     private float height;
+    private float rect;// 限定饼图的大小的矩形
     private float sum;
     /**
      * 通用的初始化方法
-     * @param context
-     * @param attrs
      */
-    private void init(Context context, AttributeSet attrs) {
+    private void init() {
         arcPaint = new Paint();
         arcPaint.setColor(Color.BLACK);
         arcPaint.setStyle(Paint.Style.FILL);//填充
         arcPaint.setAntiAlias(true);
 
-        width = getWidth();
-        height = getHeight();
-        // 参数  left  top   right  bottom
-        arcRect = new RectF(0,0,100,100);
+        arcRect = new RectF();
         data = new float[]{10000,5000};
     }
+
+    /**
+     *   求 data 数据 总和
+     * @param data
+     */
     private void getSum(float[] data){
         for (int i = 0; i < data.length; i++) {
             sum+=data[i];
@@ -75,6 +76,11 @@ public class DetailArcChartView extends View{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         //清除内容
+        width = getWidth();
+        height = getHeight();
+        rect = width<height?width:height;
+        // 参数  left  top   right  bottom
+        arcRect.set(0,0,rect,rect);
         canvas.drawColor(Color.WHITE);
         switch (tabIndex){
             case 0:
@@ -91,33 +97,32 @@ public class DetailArcChartView extends View{
                 break;
             case 1:
                 getSum(data);
-                //画 橙色 的半圆   #FFA500
+                //画 橙色 的半圆   #FFA500  娱乐
                 arcPaint.setColor(Color.rgb(255,165,0));
                 float entertainment = (data[0]/sum)*360;
                 canvas.drawArc(arcRect,0,entertainment,true,arcPaint);
-                //画 热粉红色 的半圆   #FF69B4
+                //画 热粉红色 的半圆   #FF69B4  餐饮
                 arcPaint.setColor(Color.rgb(255,105,180));
                 float repast = (data[1]/sum)*360;
                 canvas.drawArc(arcRect,entertainment,repast,true,arcPaint);
-                //画 红色 的半圆  #FF0000
+                //画 红色 的半圆  #FF0000  房租
                 arcPaint.setColor(Color.rgb(255,0,0));
                 float rent = (data[2]/sum)*360;
                 canvas.drawArc(arcRect,entertainment+repast,rent,true,arcPaint);
-                //画 秘鲁色 的半圆  #CD853F
+                //画 秘鲁色 的半圆  #CD853F   交通
                 arcPaint.setColor(Color.rgb(205,133,63));
                 float traffic = (data[3]/sum)*360;
                 canvas.drawArc(arcRect,entertainment+repast+rent,traffic,true,arcPaint);
-                //画 中粉紫色 的半圆  #BA55D3
+                //画 中粉紫色 的半圆  #BA55D3   购物
                 arcPaint.setColor(Color.rgb(186,85,211));
                 float shopping = (data[4]/sum)*360;
                 canvas.drawArc(arcRect,entertainment+repast+rent+traffic,shopping,true,arcPaint);
-                //画 苍宝石绿 的半圆   #AFEEEE
+                //画 苍宝石绿 的半圆   #AFEEEE   其他
                 arcPaint.setColor(Color.rgb(175,238,238));
                 float others = (data[5]/sum)*360;
                 canvas.drawArc(arcRect,entertainment+repast+rent+traffic+shopping,others,true,arcPaint);
                 sum=0;
                 break;
         }
-
     }
 }

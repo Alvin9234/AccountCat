@@ -52,7 +52,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
         init();
     }
-
     /**
      * 通用的初始化方法
      */
@@ -77,7 +76,6 @@ public class MainActivity extends Activity {
             listView_all.setEmptyView(textView_emptyInfo);
         }
     }
-
     /**
      *  View 控件的 findViewById
      */
@@ -92,10 +90,12 @@ public class MainActivity extends Activity {
         btn_articles = (Button) findViewById(R.id.btn_articles);
     }
 
+    /**
+     *   刷新 列表
+     * @param list
+     */
     public void reloadListView(List<Map<String, Object>> list){
-        //if(totalList ==null){
-            totalList.clear();
-       // }
+        totalList.clear();
         totalList.addAll(list);
         adapter.notifyDataSetChanged();
     }
@@ -179,14 +179,16 @@ public class MainActivity extends Activity {
                 break;
         }
     }
+
+    /**
+     *   清空 输入框
+     */
     public void clearEditText(){
         editText_money.setText("");
         editText_remark.setText("");
     }
     /**
      * 执行保存数据
-     * entertainment,repast,shelter,traveling,shopping,others
-     *
      * @return
      */
     public boolean insertData(String type) {
