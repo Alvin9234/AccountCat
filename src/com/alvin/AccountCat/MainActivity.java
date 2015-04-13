@@ -124,7 +124,8 @@ public class MainActivity extends Activity {
                 final String[] articles = getResources().getStringArray(R.array.articles);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("选择类别");
-                builder.setSingleChoiceItems(articles, 0, new DialogInterface.OnClickListener() {
+                // 第二个参数 默认从0开始即第一个被选中 ，，-1 代表一个都不选
+                builder.setSingleChoiceItems(articles, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i) {

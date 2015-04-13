@@ -3,7 +3,6 @@ package com.alvin.fragment;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.alvin.AccountCat.R;
@@ -281,11 +280,7 @@ public class DummyFragment extends Fragment {
                 List<Map<String, Object>> list = helper.selectList(str,
                         new String[]{String.valueOf(year),
                                 arrTabTitles[tabIndex]});
-                reloadListView(list);
-                // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
-                float[] data = setChartData(list);
-                drawChart(data); // 画图
-                setRatioText(data);// 设置 比例示意文本
+                refresh(list);
             }
         });
         // 按月查看
@@ -297,11 +292,7 @@ public class DummyFragment extends Fragment {
                         new String[]{ String.valueOf(monthOfYear+1),
                                 String.valueOf(year),
                                 arrTabTitles[tabIndex]});
-                reloadListView(list);
-                // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
-                float[] data = setChartData(list);
-                drawChart(data); // 画图
-                setRatioText(data);// 设置 比例示意文本
+                refresh(list);
             }
         });
         //  按周 查看
@@ -315,22 +306,22 @@ public class DummyFragment extends Fragment {
                                 String.valueOf(monthOfYear+1),
                                 String.valueOf(year),
                                 arrTabTitles[tabIndex]});
-                Log.i("list_day","list_day---->>>>"+list_day);
-                week = Integer.parseInt(list_day.get(0).get("week").toString());
-
-                String str_week = "select * from tb_count where week = ? and month = ? and year = ? and article = ?";
-                List<Map<String, Object>> list_week = helper.selectList(str_week,
-                        new String[]{String.valueOf(week),
-                                String.valueOf(monthOfYear+1),
-                                String.valueOf(year),
-                                arrTabTitles[tabIndex]});
-                Log.i("list_week","list_week---->>>>"+list_week);
-
-                reloadListView(list_week);
-                // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
-                float[] data = setChartData(list_week);
-                drawChart(data); // 画图
-                setRatioText(data);// 设置 比例示意文本
+                if(list_day!=null && list_day.size()!=0) {
+                    week = Integer.parseInt(list_day.get(0).get("week").toString());
+                    String str_week = "select * from tb_count where week = ? and month = ? and year = ? and article = ?";
+                    List<Map<String, Object>> list_week = helper.selectList(str_week,
+                            new String[]{String.valueOf(week),
+                                    String.valueOf(monthOfYear+1),
+                                    String.valueOf(year),
+                                    arrTabTitles[tabIndex]});
+                    reloadListView(list_week);
+                    // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
+                    float[] data = setChartData(list_week);
+                    drawChart(data); // 画图
+                    setRatioText(data);// 设置 比例示意文本
+                } else{
+                    Toast.makeText(getActivity(),"暂无数据",Toast.LENGTH_SHORT).show();
+                }
             }
         });
         //   按天查看
@@ -343,12 +334,25 @@ public class DummyFragment extends Fragment {
                                 String.valueOf(monthOfYear+1),
                                 String.valueOf(year),
                                 arrTabTitles[tabIndex]});
-                reloadListView(list_day);
-                // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
-                float[] data = setChartData(list_day);
-                drawChart(data); // 画图
-                setRatioText(data);// 设置 比例示意文本
+                refresh(list_day);
             }
         });
+    }
+
+    /**
+     *  按钮事件中调用的方法，
+     *  重新展示画图
+     * @param list
+     */
+    private void refresh(List<Map<String, Object>> list) {
+        if (list != null && list.size()!=0) {
+            reloadListView(list);
+            // TODO--------由于 list 已经刷新，，所以需要重新画饼图-------
+            float[] data = setChartData(list);
+            drawChart(data); // 画图
+            setRatioText(data);// 设置 比例示意文本
+        }else{
+            Toast.makeText(getActivity(),"暂无数据",Toast.LENGTH_SHORT).show();
+        }
     }
 }

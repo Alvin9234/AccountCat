@@ -25,6 +25,5 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailFragmentActivity"/>
-        <activity android:name=".DetailFragmentActivity"/>
     </application>
 </manifest>
