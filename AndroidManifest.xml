@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
             android:label="@string/app_name"
@@ -25,5 +29,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailFragmentActivity"/>
+        <!-- ZXing 二维码扫描入口 -->
+        <activity
+                android:configChanges="orientation|keyboardHidden"
+                android:name="com.zxing.activity.CaptureActivity"
+                android:screenOrientation="portrait"
+                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                android:windowSoftInputMode="stateAlwaysHidden" >
+        </activity>
+        <activity android:name=".SaoYiSaoActivity"/>
     </application>
 </manifest>

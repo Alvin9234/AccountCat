@@ -6,32 +6,35 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.alvin.adapter.ListViewAdapter;
 import com.alvin.helper.MySQLiteOpenHelper;
+import com.zxing.activity.CaptureActivity;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends Activity {
     //-----------  控件 -----------
-    private ListView listView_all;
-    private TextView textView_date;
-    private TextView textView_emptyInfo;
-    private EditText editText_money;
-    private EditText editText_remark;
-    private RadioButton radioButton_income;
-    private RadioButton radioButton_expenditure;
-    private Button btn_articles;
+    private ListView listView_all;//显示所有 记账记录 的控件
+    private TextView textView_date;//显示日期
+    private TextView textView_emptyInfo;// listview 暂无记录的显示文本
+    private EditText editText_money;// 输入 money
+    private EditText editText_remark;// 备注
+    private RadioButton radioButton_income;// 收入 选择项
+    private RadioButton radioButton_expenditure;//  支出 选择项
+    private Button btn_articles;// 类型选择按钮
     //-----------  控件 -----------
     //成员变量
-    private MySQLiteOpenHelper helper;
-    private ListViewAdapter adapter;
-    private List<Map<String, Object>> totalList;
+    private MySQLiteOpenHelper helper;// 数据库处理 对象
+    private ListViewAdapter adapter; // listview 的适配器
+    private List<Map<String, Object>> totalList;// listview中数据集合
     private Calendar calendar;
     private int year; // 获取选择日期时的 年
     private int monthOfYear;// 月
@@ -39,8 +42,8 @@ public class MainActivity extends Activity {
     private int week;// 星期几
     private String dateString;// 拼接日期的字符串
     private String sqlInsert = "";
-    private String type = "";
-    private boolean isOK = false;
+    private String type = "";// 选择的 类型 字符串文本
+    private boolean isOK = false;// 数据库语句执行结果  判断标记
     private final String query = "select * from tb_count";
 
     /**
@@ -75,6 +78,7 @@ public class MainActivity extends Activity {
         } else {
             listView_all.setEmptyView(textView_emptyInfo);
         }
+        registerForContextMenu(listView_all);// 为 ListView 注册上下文菜单
     }
     /**
      *  View 控件的 findViewById
@@ -89,7 +93,6 @@ public class MainActivity extends Activity {
         radioButton_expenditure = (RadioButton) findViewById(R.id.radioButton_expenditure);
         btn_articles = (Button) findViewById(R.id.btn_articles);
     }
-
     /**
      *   刷新 列表
      * @param list
@@ -115,6 +118,9 @@ public class MainActivity extends Activity {
                         year = y;
                         monthOfYear = m;
                         dayOfMonth = d;
+                        // 根据年月日得到新的Calendar对象，重新获得对应的week
+                        Calendar c = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+                        week = c.get(Calendar.WEEK_OF_MONTH);
                         textView_date.setText(dateString);
                     }
                 }, year, monthOfYear, dayOfMonth);
@@ -130,36 +136,28 @@ public class MainActivity extends Activity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i) {
                             case 0:
-                                btn_articles.setText(articles[0]);
-                                type = articles[0];
+                                btnSetText(articles[0]);
                                 break;
                             case 1:
-                                btn_articles.setText(articles[1]);
-                                type = articles[1];
+                                btnSetText(articles[1]);
                                 break;
                             case 2:
-                                btn_articles.setText(articles[2]);
-                                type = articles[2];
+                                btnSetText(articles[2]);
                                 break;
                             case 3:
-                                btn_articles.setText(articles[3]);
-                                type = articles[3];
+                                btnSetText(articles[3]);
                                 break;
                             case 4:
-                                btn_articles.setText(articles[4]);
-                                type = articles[4];
+                                btnSetText(articles[4]);
                                 break;
                             case 5:
-                                btn_articles.setText(articles[5]);
-                                type = articles[5];
+                                btnSetText(articles[5]);
                                 break;
                             case 6:
-                                btn_articles.setText(articles[6]);
-                                type = articles[6];
+                                btnSetText(articles[6]);
                                 break;
                             case 7:
-                                btn_articles.setText(articles[7]);
-                                type = articles[7];
+                                btnSetText(articles[7]);
                                 break;
                         }
                     }
@@ -181,6 +179,14 @@ public class MainActivity extends Activity {
         }
     }
 
+    /**
+     *   设置选择类型后的 按钮文本
+     * @param typeStr
+     */
+    public void btnSetText(String typeStr){
+        btn_articles.setText(typeStr);
+        type = typeStr;
+    }
     /**
      *   清空 输入框
      */
@@ -217,13 +223,75 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent();
         switch (item.getItemId()) {
             case R.id.action_detail:
-                Intent intent = new Intent();
                 intent.setClass(this, DetailFragmentActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.action_saoYiSao:
+                intent.setClass(this, CaptureActivity.class);
+                startActivityForResult(intent, 2000);
+                break;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //处理扫描结果（在界面上显示）
+        if (resultCode == RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            String scanResult = bundle.getString("result");
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setIcon(R.drawable.icon);
+            builder.setTitle("扫描结果：");
+            builder.setMessage(scanResult);
+            builder.setPositiveButton("确定",null);
+            builder.show();
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderIcon(R.drawable.icon);
+        menu.setHeaderTitle("确定要删除这一条数据吗？");
+        getMenuInflater().inflate(R.menu.contextmenu,menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        final int position = info.position;
+        final String id = totalList.get(position).get("_id").toString();
+        switch (item.getItemId()){
+            case R.id.action_context_delete:
+                AlertDialog.Builder builder =new AlertDialog.Builder(this);
+                builder.setIcon(R.drawable.icon);
+                builder.setTitle("确定要删除吗？");
+                builder.setNegativeButton("取消",null);
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String delete = "delete from tb_count where _id = ?";
+                        boolean flag = helper.execData(delete,new Object[]{id});
+                        if(flag){
+                            Toast.makeText(MainActivity.this,"删除成功",Toast.LENGTH_SHORT).show();
+                            List<Map<String, Object>> list = helper.selectList(query,null);
+                            reloadListView(list);
+                        }else{
+                            Toast.makeText(MainActivity.this,"删除失败",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.show();
+                break;
+            case R.id.action_context_doNothing:
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 }

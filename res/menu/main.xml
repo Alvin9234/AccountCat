@@ -7,4 +7,11 @@
             android:icon="@drawable/detail"
             android:title=""
             />
+        <item
+                android:id="@+id/action_saoYiSao"
+                android:orderInCategory="100"
+                android:showAsAction="always"
+                android:icon="@drawable/sao"
+                android:title=""
+                />
 </menu>
